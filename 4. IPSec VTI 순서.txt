@@ -1,0 +1,27 @@
+추가.
++ Dynamic Routing
+- 터널주소 광고
+- 물리적 주소 광고 포함 안함
+
+1. ISAKMP 정책 설정
+crypto isakmp policy 10
+     authentication pre-share
+2. Peer 인증
+crypto isakmp key 암호 address 0.0.0.0 0.0.0.0
+3. IPsec 정책 설정
+crypto ipsec transform-set 정책이름 esp-aes esp-md5-hmac
+4. IPSec Profile 설정
+crypto ipsec profile 프로파일이름
+     set transform-set 정책이름
+5. 터널 생성 및 적용
+본사/지사
+int tunnel ...
+     ip address ...
+     tunnel source 출발지주소
+     tunnel destination 목적지주소
+     tunnel mode ipsec ipv4
+     tunnel protection ipsec profile 프로파일이름
+
+< 주의사항 >
+- 보호대상 트래픽 없음
+- 크립토 맵 설정 및 적용 없음
