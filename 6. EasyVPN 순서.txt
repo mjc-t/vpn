@@ -1,0 +1,65 @@
+1. AAA 설정
+aaa new-model
+aaa authentication login default line none
+aaa authentication login 이름 local
+aaa authorization network 이름 local
+2. 사용자 계정 생성
+username 사용자이름 password 암호
+3. ISAKMP 정책 설정
+crypto isakmp policy 10
+     authentication pre-share
+     group {2 | 5}
+4. IP 주소 풀 지정
+ip local pool 풀이름 시작주소 끝주소
+5. 보호대상 트래픽 지정
+access-list 100 per ip 출발지네트워크 와일드카드 any
+6. 그룹 및 그룹정책 설정
+crypto isakmp client configuration group 그룹이름
+     acl ACL번호
+     key 암호
+     dns DNS주소
+     domain 도메인이름
+     pool 풀이름
+     banner *
+     환영메시지
+     *
+7. IPsec 정책 설정
+crypto ipsec transform-set 정책이름 esp-aes ...
+8. 동적 크립토 맵 설정
+cypto dynamic-map 동적맵이름 10
+     set transform-set 정책이름
+     reverse-route remote-peer
+9. 정적 크립토 맵 설정
+crypto map 맵이름 client authentication list 인증이름
+crypto map 맵이름 client configuration address respond
+crypto map 맵이름 isakmp authorization list 인증이름
+crypto map 맵이름 10 ipsec-isakmp dynamic 동적맵이름
+10. 크립토 맵 적용
+int ...
+crypto map 맵이름
+
+EVC
+1. EVC 설정
+crypto ipsec client ezvpn 이름
+     connect auto
+     group 그룹이름 key 암호
+     mode [network-extension | client]
+     peer EVS주소
+2. EVC 활성화
+int ...
+     crypto ipsec client ezvpn 이름 outside
+int ...
+     crypto ipsec client ezvpn 이름 inside
+3. 사용자 인증
+crypto ipsec client ezvpn xauth
+Username: 
+Password:
+
+확인 명령어
+show crypto ipsec client ezvpn
+show crypto isakmp sa
+show crypto engine connection active
+
+모드 변경
+crypto ipsec client ezvpn ez
+mode client
